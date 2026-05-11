@@ -33,9 +33,10 @@ tracker = Sort(max_age=20, min_hits=5, iou_threshold=0.3)
 
 #line
 
-limits = [0, 660, 940, 660]  # ligne horizontale pleine largeur, y ≈ 660
+limits = [0, 500, 940, 500]  # ligne horizontale pleine largeur, y ≈ 660
 
-
+# counter
+totalCount = 0
 
 
 while True:
@@ -62,7 +63,7 @@ while True:
             currentClass = classNames[cls]
 
             if currentClass in ["car", "truck", "bus", "motorbike"] and conf >= 0.3:
-                cvzone.cornerRect(img, (x1, y1, w, h), l=9, rt=5)
+                #cvzone.cornerRect(img, (x1, y1, w, h), l=9, rt=5)
                 currentArray = np.array([x1, y1, x2, y2, conf])
                 detections = np.vstack((detections, currentArray))
 
@@ -76,9 +77,19 @@ while True:
 
         print(result)
         w, h = x2 - x1, y2 - y1
-        cvzone.cornerRect(img, (x1, y1, w , h), l=1, rt=1, colorR=(255,0,0)) # tracker blocks
+        cvzone.cornerRect(img, (x1, y1, w , h), l=9, rt=2, colorR=(255,0,255)) # tracker blocks
         cvzone.putTextRect(img, f'{int(id)}', (max(0, x1), max(5, y1)),
                            scale=2, thickness=3, offset=8)
+
+
+        cx, cy = x1+w//2, y1+h//2
+        cv2.circle(img, (int(cx), int(cy)), 5, (255,0,255), cv2.FILLED)
+
+        if limits[0] <cx< limits[1] and limits[1]-20 <cy< limits[2] + 20:
+            totalCount += 1
+
+        cvzone.putTextRect(img, f'Count : {totalCount}', (50,50))
+
 
     cv2.imshow('img',img)
     #cv2.imshow('imgRegion', imgRegion)
