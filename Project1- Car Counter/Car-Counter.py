@@ -2,6 +2,7 @@ from ultralytics import YOLO
 import cv2
 import cvzone # display all detection
 import math
+from sort import *
 
 
 cap = cv2.VideoCapture("../video/car0fps.mp4") # for video
@@ -23,10 +24,18 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
               "teddy bear", "hair drier", "toothbrush"
               ]
 
+
+mask = cv2.imread("mask.png")
+
 while True:
     sucess, img = cap.read()
+
+
     img = cv2.resize(img, (940, 700)) # for videos redimention
-    results = model(img, stream=True)
+    mask = cv2.resize(mask, (940, 700))
+    imgRegion = cv2.bitwise_and(img, mask)
+    results = model(imgRegion, stream=True) # only on the specify region it's detect it
+
 
     # design the boxes
     for r in results:
@@ -58,7 +67,9 @@ while True:
                 cvzone.putTextRect(img, f'{classNames[cls]}{conf}', (max(0, x1), max(35, y1)),
                                    scale=0.7, thickness=1, offset=3)  # display a box text up the zone
                 cvzone.cornerRect(img, (x1, y1, w, h), l=9)
+
     cv2.imshow('img',img)
+    cv2.imshow('imgRegion', imgRegion)
 
     if cv2.waitKey(0) & 0xFF == ord('q'):
         break
