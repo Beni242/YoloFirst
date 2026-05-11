@@ -39,15 +39,9 @@ while True:
 
              x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
 
-             #print(x1, y1, x2, y2)
-
-                # with open cv
-
-             #cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
-
             # with cvzone
              w, h = x2-x1, y2-y1
-             cvzone.cornerRect(img, (x1, y1, w,h))
+             cvzone.cornerRect(img, (x1, y1, w,h), l=9)
 
             # confidance
 
@@ -56,10 +50,15 @@ while True:
             # Class Name
 
              cls = int (box.cls[0])
+             currurentClass = classNames[cls]
 
-             cvzone.putTextRect(img, f'{classNames[cls]}{conf}', (max(0, x1), max(35, y1)), scale=1, thickness=1)  # display a box text up the zone
+             if currurentClass == "car" or currurentClass == "truck" or currurentClass == "bus"\
+                     or currurentClass == "motorbike" and conf >= 0.3:
 
+                cvzone.putTextRect(img, f'{classNames[cls]}{conf}', (max(0, x1), max(35, y1)),
+                                   scale=0.7, thickness=1, offset=3)  # display a box text up the zone
+                cvzone.cornerRect(img, (x1, y1, w, h), l=9)
     cv2.imshow('img',img)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(0) & 0xFF == ord('q'):
         break
