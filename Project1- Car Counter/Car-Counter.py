@@ -6,7 +6,7 @@ import math
 from sort import *
 
 
-cap = cv2.VideoCapture("../video/car0fps.mp4") # for video
+cap = cv2.VideoCapture("../video/car1fps.mp4") # for video
 
 
 
@@ -26,7 +26,7 @@ classNames = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "trai
               ]
 
 
-mask = cv2.imread("mask.png")
+mask = cv2.imread("r.png")
 
 #Tracking
 tracker = Sort(max_age=20, min_hits=5, iou_threshold=0.3)
@@ -36,7 +36,7 @@ tracker = Sort(max_age=20, min_hits=5, iou_threshold=0.3)
 limits = [0, 500, 940, 500]  # ligne horizontale pleine largeur, y ≈ 660
 
 # counter
-totalCount = 0
+totalCount = []
 
 
 while True:
@@ -85,14 +85,16 @@ while True:
         cx, cy = x1+w//2, y1+h//2
         cv2.circle(img, (int(cx), int(cy)), 5, (255,0,255), cv2.FILLED)
 
-        if limits[0] <cx< limits[1] and limits[1]-20 <cy< limits[2] + 20:
-            totalCount += 1
+        if limits[0] <cx< limits[1] and limits[1]-15 <cy< limits[2] + 15: # acn be increase
+            if totalCount.count(id) == 0:
+                totalCount.append(id)
+                cv2.line(img, (limits[0], limits[1]), (limits[2], limits[3]), (0,255,0),5)
 
-        cvzone.putTextRect(img, f'Count : {totalCount}', (50,50))
+    cvzone.putTextRect(img, f'Count : {len(totalCount)}', (50,50))
 
 
     cv2.imshow('img',img)
     #cv2.imshow('imgRegion', imgRegion)
 
-    if cv2.waitKey(0) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
