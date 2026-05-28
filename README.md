@@ -1,4 +1,4 @@
-#  YOLO Firs try
+#  YOLO First try
 
 ## 📋 Summary
 In this project, I built a real-time vehicle counting system using YOLO for object detection. The program detects cars passing through a video feed and counts them each time they cross a defined line — a practical example of applying computer vision to traffic monitoring.
